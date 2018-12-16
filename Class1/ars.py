@@ -3,6 +3,8 @@
 # Importing Libraries
 import os
 import numpy as np
+import gym
+from gym import wrappers
 
 # Setting the Hyper Parameters
 
@@ -128,3 +130,11 @@ work_dir = mkdir('exp', 'brs')
 monitor_dir = mkdir(work_dir, 'monitor')
 
 hp = Hp()
+np.random.seed(hp.seed)
+env = gym.make(hp.env_name)
+env = wrappers.Monitor(env, monitor_dir, force = True)
+nb_inputs = env.observation_space.shape[0]
+nb_outputs = env.action_space.shape[0]
+policy = Policy(nb_inputs, nb_outputs)
+normalizer = Normalizer(nb_inputs)
+train(env, policy, normalizer, hp)
